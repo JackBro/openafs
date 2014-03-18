@@ -280,7 +280,7 @@ my $bos       = "$path->{'afssrvbindir'}/bos";
 my $fs        = "$path->{'afssrvbindir'}/fs";
 my $pts       = "$path->{'afssrvbindir'}/pts";
 my $vos       = "$path->{'afssrvsbindir'}/vos";
-my $afsrc     = "$path->{'initdir'}/afs.rc";
+# my $afsrc     = "$path->{'initdir'}/afs.rc";
 my $aklog     = "$path->{'afswsbindir'}/aklog";
 my $tokens    = "$path->{'afswsbindir'}/tokens";
 my $klog      = "$path->{'afswsbindir'}/klog";
@@ -291,7 +291,7 @@ check_program($bos);
 check_program($fs);
 check_program($pts);
 check_program($vos);
-check_program($afsrc);
+# check_program($afsrc);
 check_program($tokens);
 
 #-----------------------------------------------------------------------------
@@ -722,25 +722,26 @@ $auth->authorize();
 # Configuring the Top Levels of the AFS Filespace
 #
 print "debug: Creating the volumes...\n" if $debug;
-run("$fs setacl /afs system:anyuser rl");
+# run("$fs setacl /afs system:anyuser rl");
 
 run("$vos create $server $partition root.cell");
 if ($unwind) {
     unwind("$vos remove $server $partition root.cell -localauth");
 }
 
-run("$fs mkmount /afs/$cellname root.cell -cell $cellname -fast");
+# run("$fs mkmount /afs/$cellname root.cell -cell $cellname -fast");
 if ($unwind) {
     unwind("$fs rmmount /afs/$cellname");
 }
 
+run("echo fs setacl /afs/$cellname system:anyuser rl ; sleep 1000 || true");
 run("$fs setacl /afs/$cellname system:anyuser rl");
-run("$fs mkmount /afs/.$cellname root.cell -cell $cellname -rw");
+# run("$fs mkmount /afs/.$cellname root.cell -cell $cellname -rw");
 if ($unwind) {
     unwind("$fs rmmount /afs/.$cellname");
 }
 
-run("$fs examine /afs");
+# run("$fs examine /afs");
 run("$fs examine /afs/$cellname");
 
 run("$vos addsite $server $partition root.afs");
@@ -749,8 +750,8 @@ run("$vos release root.cell");
 run("$vos release root.afs");
 
 run("$fs checkvolumes"); # so client notices the releases
-print "debug: the following should show root.afs.readonly\n" if $debug;
-run("$fs examine /afs");
+#print "debug: the following should show root.afs.readonly\n" if $debug;
+#run("$fs examine /afs");
 print "debug: the following should show root.cell.readonly\n" if $debug;
 run("$fs examine /afs/$cellname");
 print "debug: the following should show root.cell\n" if $debug;

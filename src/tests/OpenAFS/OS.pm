@@ -175,9 +175,9 @@ sub get_commands {
   my $self = shift;
 
   my $commands = {
-    'client-start'         => "SYSCNF=$self->{'syscnf'} $path->{'initdir'}/afs.rc start",
-    'client-stop'          => "SYSCNF=$self->{'syscnf'} $path->{'initdir'}/afs.rc stop",
-    'client-restart'       => "SYSCNF=$self->{'syscnf'} $path->{'initdir'}/afs.rc restart",
+    'client-start'         => "true",
+    'client-stop'          => "true",
+    'client-restart'       => "true",
     'client-forcestop'     => sub { $self->client_forcestop() },
     'fileserver-start'     => sub { $self->fileserver_start() },
     'fileserver-stop'      => sub { $self->fileserver_stop() },
