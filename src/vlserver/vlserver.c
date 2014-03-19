@@ -65,6 +65,7 @@ afs_uint32 rd_HostAddress[MAXSERVERID + 1];
 static void *CheckSignal(void*);
 int LogLevel = 0;
 int smallMem = 0;
+int restrictedQueryLevel = RESTRICTED_QUERY_ANYUSER;
 int rxJumbograms = 0;		/* default is to not send and receive jumbo grams */
 int rxMaxMTU = -1;
 afs_int32 rxBind = 0;
@@ -235,6 +236,20 @@ main(int argc, char **argv)
 	    serverLogSyslog = 1;
 	    serverLogSyslogFacility = atoi(argv[index] + 8);
 #endif
+	} else if (strcmp(argv[index], "-restricted_query") == 0) {
+	    if ((index + 1) >= argc) {
+		fprintf(stderr, "missing argument for -restricted_query\n");
+		return -1;
+	    }
+	    ++index;
+	    if (strcmp(argv[index], "anyuser") == 0)
+		restrictedQueryLevel = RESTRICTED_QUERY_ANYUSER;
+	    else if (strcmp(argv[index], "admin") == 0)
+		restrictedQueryLevel = RESTRICTED_QUERY_ADMIN;
+	    else {
+		fprintf(stderr, "invalid argument for -restricted_query\n");
+		return -1;
+	    }
 	} else {
 	    /* support help flag */
 #ifndef AFS_NT40_ENV
@@ -243,12 +258,14 @@ main(int argc, char **argv)
 		   "[-auditlog <log path>] [-jumbo] [-d <debug level>] "
 		   "[-syslog[=FACILITY]] "
 		   "[-enable_peer_stats] [-enable_process_stats] "
+		   "[-restricted_query <anyuser | admin>] "
 		   "[-help]\n");
 #else
 	    printf("Usage: vlserver [-p <number of processes>] [-nojumbo] "
 		   "[-rxmaxmtu <bytes>] [-rxbind] [-allow-dotted-principals] "
 		   "[-auditlog <log path>] [-jumbo] [-d <debug level>] "
 		   "[-enable_peer_stats] [-enable_process_stats] "
+		   "[-restricted_query <anyuser | admin>] "
 		   "[-help]\n");
 #endif
 	    fflush(stdout);

@@ -84,6 +84,7 @@ int debuglevel = 0;
 #define MAXLWP 128
 int lwps = 9;
 int udpBufSize = 0;		/* UDP buffer size for receive */
+int restrictedQueryLevel = RESTRICTED_QUERY_ANYUSER;
 
 int rxBind = 0;
 int rxkadDisableDotCheck = 0;
@@ -397,7 +398,21 @@ main(int argc, char **argv)
 	    serverLogSyslogFacility = atoi(argv[code] + 8);
 	}
 #endif
-	else {
+	else if (strcmp(argv[code], "-restricted_query") == 0) {
+	    if ((code + 1) >= argc) {
+		fprintf(stderr, "missing argument for -restricted_query\n");
+		return -1;
+	    }
+	    ++code;
+	    if (strcmp(argv[code], "anyuser") == 0)
+		restrictedQueryLevel = RESTRICTED_QUERY_ANYUSER;
+	    else if (strcmp(argv[code], "admin") == 0)
+		restrictedQueryLevel = RESTRICTED_QUERY_ADMIN;
+	    else {
+		fprintf(stderr, "invalid argument for -restricted_query\n");
+		return -1;
+	    }
+	} else {
 	    printf("volserver: unrecognized flag '%s'\n", argv[code]);
 	  usage:
 #ifndef AFS_NT40_ENV
@@ -408,6 +423,7 @@ main(int argc, char **argv)
 		   "[-syslog[=FACILITY]] "
 		   "[-enable_peer_stats] [-enable_process_stats] "
 		   "[-sync <always | delayed | onclose | never>] "
+		   "[-restricted_query <anyuser | admin>] "
 		   "[-help]\n");
 #else
 	    printf("Usage: volserver [-log] [-p <number of processes>] "
@@ -416,6 +432,7 @@ main(int argc, char **argv)
 		   "[-udpsize <size of socket buffer in bytes>] "
 		   "[-enable_peer_stats] [-enable_process_stats] "
 		   "[-sync <always | delayed | onclose | never>] "
+		   "[-restricted_query <anyuser | admin>] "
 		   "[-help]\n");
 #endif
 	    VS_EXIT(1);

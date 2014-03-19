@@ -397,12 +397,15 @@ afsconf_SuperUser(struct afsconf_dir *adir, struct rx_call *acall, char *namep)
 	/* don't bother checking anything else if tix have expired */
 #ifdef AFS_PTHREAD_ENV
 	if (exp < clock_Sec()) {
-#else
-	if (exp < FT_ApproxTime()) {
-#endif
 	    UNLOCK_GLOBAL_MUTEX;
 	    return 0;		/* expired tix */
 	}
+#else
+	if (exp < FT_ApproxTime()) {
+	    UNLOCK_GLOBAL_MUTEX;
+	    return 0;		/* expired tix */
+	}
+#endif
 
 	/* generate lowercased version of cell name */
 	strcpy(tcell_l, tcell);
@@ -505,4 +508,17 @@ afsconf_SuperUser(struct afsconf_dir *adir, struct rx_call *acall, char *namep)
 	UNLOCK_GLOBAL_MUTEX;
 	return 0;		/* mysterious, just say no */
     }
+}
+
+
+/* return true if needed_level is compatible with the rx call acall */
+int
+afsconf_CheckRestrictedQuery(struct afsconf_dir *adir,
+			     struct rx_call *acall,
+			     int needed_level)
+{
+    if (needed_level == RESTRICTED_QUERY_ANYUSER)
+	return 1;
+
+    return afsconf_SuperUser(adir, acall, NULL);
 }

@@ -7,3 +7,4 @@ B<volserver>
     [B<-enable_peer_stats>] [B<-enable_process_stats>] 
     [B<-allow-dotted-principals>] [B<-preserve-vol-stats>] [B<-help>]
     [B<-sync> <I<sync behavior>>]
+    [B<-restricted_query> (anyuser | admin)]

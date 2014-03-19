@@ -85,6 +85,14 @@ operations.
 This is the same as the B<-sync> option in L<fileserver(8)>. See
 L<fileserver(8)>.
 
+=item B<-restricted_query> (anyuser | admin)
+
+Restrict RPCs that query information about volumes to a specific group of
+users. Only the RPCs that are not used by cache managers will be restricted,
+since cache manager connections to the Volume Server are always
+unauthenticated. You can use C<admin> to restrict to AFS administrators.
+The C<anyuser> option is the default.
+
 =item B<-help>
 
 Prints the online help for this command. All other valid options are

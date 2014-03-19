@@ -38,6 +38,7 @@
 #endif
 
 extern int smallMem;
+extern int restrictedQueryLevel;
 extern int extent_mod;
 extern struct afsconf_dir *vldb_confdir;
 extern struct ubik_dbase *VL_dbase;
@@ -1090,6 +1091,11 @@ SVL_ListEntry(struct rx_call *rxcall, afs_int32 previous_index,
     char rxstr[AFS_RXINFO_LEN];
 
     COUNT_REQ(VLLISTENTRY);
+
+    if (!afsconf_CheckRestrictedQuery(vldb_confdir, rxcall,
+				      restrictedQueryLevel))
+        return VL_PERM;
+
     if ((errorcode = Init_VLdbase(&ctx, LOCKREAD, this_op)))
 	return errorcode;
     VLog(25, ("OListEntry index=%d %s\n", previous_index,
@@ -1115,6 +1121,11 @@ SVL_ListEntryN(struct rx_call *rxcall, afs_int32 previous_index,
     char rxstr[AFS_RXINFO_LEN];
 
     COUNT_REQ(VLLISTENTRYN);
+
+    if (!afsconf_CheckRestrictedQuery(vldb_confdir, rxcall,
+				      restrictedQueryLevel))
+        return VL_PERM;
+
     if ((errorcode = Init_VLdbase(&ctx, LOCKREAD, this_op)))
 	return errorcode;
     VLog(25, ("ListEntry index=%d %s\n", previous_index, rxinfo(rxstr, rxcall)));
@@ -1145,6 +1156,11 @@ SVL_ListAttributes(struct rx_call *rxcall,
     char rxstr[AFS_RXINFO_LEN];
 
     COUNT_REQ(VLLISTATTRIBUTES);
+
+    if (!afsconf_CheckRestrictedQuery(vldb_confdir, rxcall,
+				      restrictedQueryLevel))
+        return VL_PERM;
+
     vldbentries->bulkentries_val = 0;
     vldbentries->bulkentries_len = *nentries = 0;
     if ((errorcode = Init_VLdbase(&ctx, LOCKREAD, this_op)))
@@ -1284,6 +1300,11 @@ SVL_ListAttributesN(struct rx_call *rxcall,
     char rxstr[AFS_RXINFO_LEN];
 
     COUNT_REQ(VLLISTATTRIBUTESN);
+
+    if (!afsconf_CheckRestrictedQuery(vldb_confdir, rxcall,
+				      restrictedQueryLevel))
+        return VL_PERM;
+
     vldbentries->nbulkentries_val = 0;
     vldbentries->nbulkentries_len = *nentries = 0;
     if ((errorcode = Init_VLdbase(&ctx, LOCKREAD, this_op)))
@@ -1442,6 +1463,11 @@ SVL_ListAttributesN2(struct rx_call *rxcall,
 #endif
 
     COUNT_REQ(VLLISTATTRIBUTESN2);
+
+    if (!afsconf_CheckRestrictedQuery(vldb_confdir, rxcall,
+				      restrictedQueryLevel))
+        return VL_PERM;
+
     vldbentries->nbulkentries_val = 0;
     vldbentries->nbulkentries_len = 0;
     *nentries = 0;
@@ -1703,6 +1729,11 @@ SVL_LinkedList(struct rx_call *rxcall,
     int pollcount = 0;
 
     COUNT_REQ(VLLINKEDLIST);
+
+    if (!afsconf_CheckRestrictedQuery(vldb_confdir, rxcall,
+				      restrictedQueryLevel))
+        return VL_PERM;
+
     if ((errorcode = Init_VLdbase(&ctx, LOCKREAD, this_op)))
 	return errorcode;
 
@@ -1830,6 +1861,11 @@ SVL_LinkedListN(struct rx_call *rxcall,
     int pollcount = 0;
 
     COUNT_REQ(VLLINKEDLISTN);
+
+    if (!afsconf_CheckRestrictedQuery(vldb_confdir, rxcall,
+				      restrictedQueryLevel))
+        return VL_PERM;
+
     if ((errorcode = Init_VLdbase(&ctx, LOCKREAD, this_op)))
 	return errorcode;
 
@@ -1955,11 +1991,11 @@ SVL_GetStats(struct rx_call *rxcall,
     char rxstr[AFS_RXINFO_LEN];
 
     COUNT_REQ(VLGETSTATS);
-#ifdef	notdef
-    /* Allow users to get statistics freely */
-    if (!afsconf_SuperUser(vldb_confdir, rxcall, NULL))	/* Must be in 'UserList' to use */
-	return VL_PERM;
-#endif
+
+    if (!afsconf_CheckRestrictedQuery(vldb_confdir, rxcall,
+				      restrictedQueryLevel))
+        return VL_PERM;
+
     if ((errorcode = Init_VLdbase(&ctx, LOCKREAD, this_op)))
 	return errorcode;
     VLog(5, ("GetStats %s\n", rxinfo(rxstr, rxcall)));

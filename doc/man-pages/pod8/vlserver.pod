@@ -10,6 +10,7 @@ vlserver - Initializes the Volume Location Server
 B<vlserver> S<<< [B<-p> <I<number of threads>>] >>> [B<-nojumbo>] [B<-jumbo>] [B<-rxbind>] S<<< [B<-d> <I<debug level>>] >>>
     [B<-allow-dotted-principals>] [B<-enable_peer_stats>] [B<-enable_process_stats>] 
 	 S<<< [B<-auditlog> <I<log path>>] >>> [B<-audit-interface> (file | sysvmq)]
+    [B<-restricted_query> (anyuser | admin)]
     [B<-help>]
 
 =for html
@@ -122,6 +123,11 @@ L<fileserver(8)> for an explanation of each interface.
 
 Bind the Rx socket to the primary interface only.  (If not specified, the
 Rx socket will listen on all interfaces.)
+
+=item B<-restricted_query> (anyuser | admin)
+
+This is the same as the B<-restricted_query> option in L<volserver(8)>.
+See L<volserver(8)>.
 
 =item B<-help>
 

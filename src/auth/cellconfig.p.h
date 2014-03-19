@@ -187,6 +187,18 @@ extern int afsconf_GetNthUser(struct afsconf_dir *adir, afs_int32 an,
 extern int afsconf_AddUser(struct afsconf_dir *adir, char *aname);
 extern int afsconf_SuperUser(struct afsconf_dir *adir, struct rx_call *acall,
                              char *namep);
+extern int afsconf_CheckRestrictedQuery(struct afsconf_dir *adir,
+					struct rx_call *acall,
+					int needed_level);
+
+/*
+ * Level constants for the -restricted_query option used by vlserver
+ * and volser.  Once we have vlserver and volserver to ptserver
+ * connection, we can add more access levels, like AUTHUSER or
+ * AUTHANDFOREIGNUSER.
+ */
+#define RESTRICTED_QUERY_ANYUSER  0
+#define RESTRICTED_QUERY_ADMIN    1
 
 /* some well-known ports and their names; new additions to table in cellconfig.c, too */
 #define	AFSCONF_FILESERVICE		"afs"
